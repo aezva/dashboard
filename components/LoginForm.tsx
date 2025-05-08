@@ -7,12 +7,12 @@ export default function LoginForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
-  const { signIn } = useAuth();
+  const { login } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await signIn(email, password);
+      await login(email, password);
     } catch (error) {
       setError('Error al iniciar sesión. Por favor, verifica tus credenciales.');
     }
