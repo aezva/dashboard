@@ -20,6 +20,9 @@ module.exports = {
           800: '#075985',
           900: '#0c4a6e',
         },
+        'nia-pink': '#FF9C9C',
+        'nia-gray': '#F3F4F6',
+        'nia-dark': '#1F2937',
       },
       fontFamily: {
         'roboto': ['Roboto', 'sans-serif'],
