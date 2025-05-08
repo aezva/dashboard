@@ -42,7 +42,29 @@ export default function BusinessPage() {
           throw new Error('No se encontraron datos del negocio');
         }
 
-        setBusinessData(data);
+        // Transformar los datos para que coincidan con la interfaz BusinessData
+        const transformedData: BusinessData = {
+          id: data.id,
+          business_name: data.business_name || '',
+          business_description: data.business_description || '',
+          industry: data.industry || '',
+          website_url: data.website_url || '',
+          platform: data.platform || '',
+          product_type: data.product_type || '',
+          main_products: data.main_products || '',
+          social_media: Array.isArray(data.social_media) ? data.social_media : [],
+          created_at: data.created_at,
+          updated_at: data.updated_at,
+          user_id: data.user_id,
+          status: data.status || 'active',
+          settings: {
+            theme: data.settings?.theme || 'default',
+            notifications: data.settings?.notifications ?? true,
+            language: data.settings?.language || 'es'
+          }
+        };
+
+        setBusinessData(transformedData);
       } catch (err) {
         setError(err instanceof Error ? err : new Error('Error al cargar los datos del negocio'));
       } finally {
