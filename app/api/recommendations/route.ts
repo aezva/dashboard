@@ -1,38 +1,23 @@
 import { NextResponse } from 'next/server';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
-import { AssistantAPI } from '@/lib/assistant';
+import { getRecommendations } from '@/lib/assistant';
+import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
+import { cookies } from 'next/headers';
 
 export async function GET() {
     try {
-        const supabase = createClientComponentClient();
-        
-        // Verificar autenticación
-        const { data: { user }, error: authError } = await supabase.auth.getUser();
-        if (authError || !user) {
-            return NextResponse.json(
-                { error: 'No autorizado' },
-                { status: 401 }
-            );
+        const supabase = createRouteHandlerClient({ cookies });
+        const { data: { session } } = await supabase.auth.getSession();
+
+        if (!session) {
+            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        // Inicializar el asistente
-        const assistant = new AssistantAPI();
-
-        // Obtener recomendaciones
-        const recommendations = await assistant.get_business_recommendations(user.id);
-
-        if (recommendations.status === 'error') {
-            return NextResponse.json(
-                { error: recommendations.message },
-                { status: 500 }
-            );
-        }
-
-        return NextResponse.json(recommendations);
+        const recommendations = await getRecommendations(session.user.id);
+        return NextResponse.json({ recommendations });
     } catch (error) {
-        console.error('Error obteniendo recomendaciones:', error);
+        console.error('Error getting recommendations:', error);
         return NextResponse.json(
-            { error: 'Error interno del servidor' },
+            { error: 'Internal Server Error' },
             { status: 500 }
         );
     }
