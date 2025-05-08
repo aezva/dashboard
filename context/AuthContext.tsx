@@ -17,6 +17,7 @@ interface AuthContextType {
   error: Error | null;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
+  register: (email: string, password: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -110,8 +111,37 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const register = async (email: string, password: string) => {
+    try {
+      const { data: { user }, error } = await supabase.auth.signUp({
+        email,
+        password,
+      });
+
+      if (error) throw error;
+
+      if (user) {
+        const { error: profileError } = await supabase
+          .from('profiles')
+          .insert([
+            {
+              id: user.id,
+              email: user.email,
+            },
+          ]);
+
+        if (profileError) throw profileError;
+      }
+
+      router.push('/login');
+    } catch (err) {
+      setError(err as Error);
+      throw err;
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, loading, error, login, logout }}>
+    <AuthContext.Provider value={{ user, loading, error, login, logout, register }}>
       {children}
     </AuthContext.Provider>
   );
