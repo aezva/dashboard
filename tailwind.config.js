@@ -23,6 +23,9 @@ module.exports = {
         'nia-pink': '#FF9C9C',
         'nia-gray': '#F3F4F6',
         'nia-dark': '#1F2937',
+        border: 'hsl(var(--border))',
+        background: 'hsl(var(--background))',
+        foreground: 'hsl(var(--foreground))',
       },
       fontFamily: {
         'roboto': ['Roboto', 'sans-serif'],
