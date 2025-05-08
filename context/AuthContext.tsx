@@ -47,8 +47,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           setUser({
             id: session.user.id,
             email: session.user.email!,
-            name: profile?.name,
-            client_id: profile?.client_id,
+            name: profile?.name ? String(profile.name) : undefined,
+            client_id: profile?.client_id ? String(profile.client_id) : undefined,
           });
         }
       } catch (err) {
@@ -71,8 +71,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setUser({
           id: session.user.id,
           email: session.user.email!,
-          name: profile?.name,
-          client_id: profile?.client_id,
+          name: profile?.name ? String(profile.name) : undefined,
+          client_id: profile?.client_id ? String(profile.client_id) : undefined,
         });
       } else {
         setUser(null);
