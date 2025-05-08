@@ -4,12 +4,12 @@ import { useAuth } from '../context/AuthContext';
 import { useRouter } from 'next/navigation';
 
 export default function Header() {
-  const { user, signOut } = useAuth();
+  const { user, logout } = useAuth();
   const router = useRouter();
 
   const handleSignOut = async () => {
     try {
-      await signOut();
+      await logout();
       router.push('/login');
     } catch (error) {
       console.error('Error al cerrar sesión:', error);
