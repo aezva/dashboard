@@ -2,7 +2,8 @@ import { supabase } from './supabase';
 
 export interface BusinessData {
   id: string;
-  name: string;
+  business_name: string;
+  industry: string;
   description: string;
   created_at: string;
   updated_at: string;
