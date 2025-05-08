@@ -1,5 +1,9 @@
 import { Language } from './LanguageContext';
 
+type TranslationValue = string | {
+  [key: string]: TranslationValue;
+};
+
 export type TranslationKey = keyof typeof translations['en'];
 
 export const translations = {
@@ -165,6 +169,6 @@ export const translations = {
   }
 } as const;
 
-export function getTranslation(key: TranslationKey, language: Language): string {
+export function getTranslation(key: TranslationKey, language: Language): TranslationValue {
   return translations[language][key];
 } 
