@@ -1,52 +1,21 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 
-export type Language = 'es' | 'en';
+type Language = 'es' | 'en';
 
 interface LanguageContextType {
   language: Language;
   setLanguage: (lang: Language) => void;
-  detectedLanguage: Language;
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
-// Función para detectar el idioma del navegador
-const detectBrowserLanguage = (): Language => {
-  if (typeof window === 'undefined') return 'es';
-  
-  const browserLang = navigator.language.split('-')[0];
-  return browserLang === 'en' ? 'en' : 'es';
-};
-
-export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [language, setLanguage] = useState<Language>(() => {
-    if (typeof window === 'undefined') return 'es';
-    
-    // Intentar obtener el idioma guardado
-    const savedLanguage = localStorage.getItem('language') as Language;
-    if (savedLanguage) return savedLanguage;
-    
-    // Si no hay idioma guardado, usar el del navegador
-    return detectBrowserLanguage();
-  });
-
-  const detectedLanguage = detectBrowserLanguage();
-
-  useEffect(() => {
-    // Guardar preferencia del usuario
-    localStorage.setItem('language', language);
-    
-    // Actualizar el atributo lang del HTML
-    document.documentElement.lang = language;
-    
-    // Emitir evento para notificar cambios de idioma
-    window.dispatchEvent(new CustomEvent('languageChanged', { detail: language }));
-  }, [language]);
+export function LanguageProvider({ children }: { children: React.ReactNode }) {
+  const [language, setLanguage] = useState<Language>('es');
 
   return (
-    <LanguageContext.Provider value={{ language, setLanguage, detectedLanguage }}>
+    <LanguageContext.Provider value={{ language, setLanguage }}>
       {children}
     </LanguageContext.Provider>
   );
