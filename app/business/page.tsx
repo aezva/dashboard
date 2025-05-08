@@ -58,9 +58,9 @@ export default function BusinessPage() {
           user_id: String(data.user_id),
           status: (data.status as 'active' | 'inactive') || 'active',
           settings: {
-            theme: String(data.settings?.theme || 'default'),
-            notifications: Boolean(data.settings?.notifications ?? true),
-            language: String(data.settings?.language || 'es')
+            theme: String((data.settings as any)?.theme || 'default'),
+            notifications: Boolean((data.settings as any)?.notifications ?? true),
+            language: String((data.settings as any)?.language || 'es')
           }
         };
 
