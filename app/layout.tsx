@@ -16,6 +16,25 @@ import { ReactNode } from 'react';
 
 const inter = Inter({ subsets: ['latin'] });
 
+function DashboardLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="h-screen bg-gray-50">
+      <EmailVerificationBanner />
+      <Header />
+      <div className="flex h-[calc(100vh-3.5rem)]">
+        <Sidebar />
+        <div className="flex flex-1 flex-col overflow-hidden">
+          <main className="flex-1 overflow-y-auto bg-gray-50 p-4 sm:p-6">
+            <div className="mx-auto max-w-7xl pt-0">
+              {children}
+            </div>
+          </main>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function AuthWrapper({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
   const pathname = usePathname();
@@ -41,22 +60,7 @@ function AuthWrapper({ children }: { children: React.ReactNode }) {
     return <>{children}</>;
   }
 
-  return (
-    <div className="h-screen bg-gray-50">
-      <EmailVerificationBanner />
-      <Header />
-      <div className="flex h-[calc(100vh-3.5rem)]">
-        <Sidebar />
-        <div className="flex flex-1 flex-col overflow-hidden">
-          <main className="flex-1 overflow-y-auto bg-gray-50 p-4 sm:p-6">
-            <div className="mx-auto max-w-7xl pt-0">
-              {children}
-            </div>
-          </main>
-        </div>
-      </div>
-    </div>
-  );
+  return <DashboardLayout>{children}</DashboardLayout>;
 }
 
 export default function RootLayout({
@@ -75,11 +79,11 @@ export default function RootLayout({
       <body className={inter.className}>
         <LanguageProvider>
           <AuthProvider>
-            <AuthWrapper>
-              <UserProvider>
+            <UserProvider>
+              <AuthWrapper>
                 {children}
-              </UserProvider>
-            </AuthWrapper>
+              </AuthWrapper>
+            </UserProvider>
           </AuthProvider>
         </LanguageProvider>
       </body>
