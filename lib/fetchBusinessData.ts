@@ -1,10 +1,20 @@
 import { supabase } from './supabase';
 
+export interface SocialMedia {
+  platform: string;
+  username: string;
+}
+
 export interface BusinessData {
   id: string;
   business_name: string;
+  business_description: string;
   industry: string;
-  description: string;
+  website_url: string;
+  platform: string;
+  product_type: string;
+  main_products: string;
+  social_media: SocialMedia[];
   created_at: string;
   updated_at: string;
   user_id: string;
