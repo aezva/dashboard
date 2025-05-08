@@ -8,24 +8,49 @@ interface User {
   email: string;
   name?: string;
   client_id?: string;
+  image?: string | null;
 }
 
 interface UserContextType {
   user: User | null;
+  userProfile: User | null;
   loading: boolean;
   error: Error | null;
+  updateUserProfile: (profile: Partial<User>) => Promise<void>;
 }
 
 const UserContext = createContext<UserContextType>({
   user: null,
+  userProfile: null,
   loading: true,
   error: null,
+  updateUserProfile: async () => {},
 });
 
 export function UserProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
+  const [userProfile, setUserProfile] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
+
+  const updateUserProfile = async (profile: Partial<User>) => {
+    try {
+      if (!user?.id) throw new Error('No hay usuario autenticado');
+
+      const { error: updateError } = await supabase
+        .from('profiles')
+        .update(profile)
+        .eq('id', user.id);
+
+      if (updateError) throw updateError;
+
+      setUserProfile(prev => prev ? { ...prev, ...profile } : null);
+      setUser(prev => prev ? { ...prev, ...profile } : null);
+    } catch (err) {
+      setError(err as Error);
+      throw err;
+    }
+  };
 
   useEffect(() => {
     const getUser = async () => {
@@ -43,12 +68,16 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
 
           if (profileError) throw profileError;
 
-          setUser({
+          const userData = {
             id: session.user.id,
             email: session.user.email!,
             name: profile?.name,
             client_id: profile?.client_id,
-          });
+            image: profile?.image,
+          };
+
+          setUser(userData);
+          setUserProfile(userData);
         }
       } catch (err) {
         setError(err as Error);
@@ -67,14 +96,19 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
           .eq('id', session.user.id)
           .single();
 
-        setUser({
+        const userData = {
           id: session.user.id,
           email: session.user.email!,
           name: profile?.name,
           client_id: profile?.client_id,
-        });
+          image: profile?.image,
+        };
+
+        setUser(userData);
+        setUserProfile(userData);
       } else {
         setUser(null);
+        setUserProfile(null);
       }
     });
 
@@ -84,7 +118,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <UserContext.Provider value={{ user, loading, error }}>
+    <UserContext.Provider value={{ user, userProfile, loading, error, updateUserProfile }}>
       {children}
     </UserContext.Provider>
   );
