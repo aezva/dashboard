@@ -44,23 +44,23 @@ export default function BusinessPage() {
 
         // Transformar los datos para que coincidan con la interfaz BusinessData
         const transformedData: BusinessData = {
-          id: data.id,
-          business_name: data.business_name || '',
-          business_description: data.business_description || '',
-          industry: data.industry || '',
-          website_url: data.website_url || '',
-          platform: data.platform || '',
-          product_type: data.product_type || '',
-          main_products: data.main_products || '',
+          id: String(data.id),
+          business_name: String(data.business_name || ''),
+          business_description: String(data.business_description || ''),
+          industry: String(data.industry || ''),
+          website_url: String(data.website_url || ''),
+          platform: String(data.platform || ''),
+          product_type: String(data.product_type || ''),
+          main_products: String(data.main_products || ''),
           social_media: Array.isArray(data.social_media) ? data.social_media : [],
-          created_at: data.created_at,
-          updated_at: data.updated_at,
-          user_id: data.user_id,
-          status: data.status || 'active',
+          created_at: String(data.created_at),
+          updated_at: String(data.updated_at),
+          user_id: String(data.user_id),
+          status: (data.status as 'active' | 'inactive') || 'active',
           settings: {
-            theme: data.settings?.theme || 'default',
-            notifications: data.settings?.notifications ?? true,
-            language: data.settings?.language || 'es'
+            theme: String(data.settings?.theme || 'default'),
+            notifications: Boolean(data.settings?.notifications ?? true),
+            language: String(data.settings?.language || 'es')
           }
         };
 
